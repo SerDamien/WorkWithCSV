@@ -30,7 +30,7 @@ public class CommandDataBase {
             try (Connection conn = DataBaseManager.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(importSql);){
                 while((line = br.readLine()) != null){
-                    String[] lineArr = line.split(",");
+                    String[] lineArr = line.replace("\"", "").split(",");
                     stmt.setString(1, lineArr[0]);
                     stmt.setString(2, lineArr[1]);
                     stmt.setString(3, lineArr[2]);
@@ -63,5 +63,15 @@ public class CommandDataBase {
             throw new RuntimeException(e);
         }
         return student;
+    }
+
+    public void deleteAll(){
+        String sql = "TRUNCATE TABLE studentscsv RESTART IDENTITY";
+        try (Connection conn = DataBaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
